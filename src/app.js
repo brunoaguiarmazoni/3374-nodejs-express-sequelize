@@ -1,4 +1,4 @@
-const express = require('express');
+import express from 'express';
 
 const app = express();
 
@@ -10,4 +10,4 @@ app.get('/teste', (req, res) => {
     .send({ mensagem: 'boas-vindas à API' });
 });
 
-module.exports = app;
+export default app;
