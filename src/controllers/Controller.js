@@ -13,10 +13,14 @@ class Controller {
     }
   }
 
-  async pegaUm(req, res) {
+  async pegaUm(req, res, next) {
     const { id } = req.params;
     try {
       const registro = await this.entidadeService.pegaUmRegistro(id);
+      req.registro = registro;
+      if (next) {
+        return next();
+      }
       return res.status(200).json(registro);
     } catch (erro) {
       return res.status(500).json(erro.message);
@@ -34,12 +38,11 @@ class Controller {
   }
 
   async atualizaRegistro(req, res) {
-    const { id } = req.params;
     const dados = req.body;
     try {
       const foiAtualizado = await this.entidadeService.atualizaRegistro(
         dados,
-        id
+        req.registro.id
       );
       if (!foiAtualizado) {
         return res
@@ -55,9 +58,8 @@ class Controller {
   }
 
   async apagaRegistro(req, res) {
-    const { id } = req.params;
     try {
-      await this.entidadeService.apagaRegistro(id);
+      await this.entidadeService.apagaRegistro(req.registro.id);
       return res.status(200).json({ mensagem: 'registro apagado com sucesso' });
     } catch (erro) {
       return res.status(500).json(erro.message);
